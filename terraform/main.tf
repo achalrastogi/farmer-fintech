@@ -26,8 +26,8 @@ resource "aws_vpc" "main" {
 
   cidr_block = "10.0.0.0/16"
 
-  enable_dns_hostnames = true
   enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "farmer-vpc"
@@ -73,6 +73,7 @@ resource "aws_subnet" "private_b" {
 ##################################
 
 resource "aws_internet_gateway" "igw" {
+
   vpc_id = aws_vpc.main.id
 }
 
@@ -80,12 +81,16 @@ resource "aws_internet_gateway" "igw" {
 # NAT GATEWAY
 ##################################
 
-resource "aws_eip" "nat_eip" {}
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+}
 
 resource "aws_nat_gateway" "nat" {
 
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public_a.id
+
+  depends_on = [aws_internet_gateway.igw]
 }
 
 ##################################
@@ -263,16 +268,19 @@ resource "aws_cloudwatch_log_group" "logs" {
   name = "/ecs/farmer-backend"
 }
 
+##################################
+# IAM ROLE FOR ECS
+##################################
+
 resource "aws_iam_role" "ecs_execution_role" {
 
-  name = "ecsTaskExecutionRole"
+  name = "farmer-ecs-execution-role"
 
   assume_role_policy = jsonencode({
 
     Version = "2012-10-17"
 
     Statement = [
-
       {
         Effect = "Allow"
 
@@ -286,6 +294,12 @@ resource "aws_iam_role" "ecs_execution_role" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
+
+  role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
 resource "aws_iam_role_policy" "ecs_secrets_policy" {
 
   name = "ecs-secrets-access"
@@ -293,6 +307,7 @@ resource "aws_iam_role_policy" "ecs_secrets_policy" {
   role = aws_iam_role.ecs_execution_role.id
 
   policy = jsonencode({
+
     Version = "2012-10-17"
 
     Statement = [
@@ -304,11 +319,15 @@ resource "aws_iam_role_policy" "ecs_secrets_policy" {
           "kms:Decrypt"
         ]
 
-        Resource = data.aws_secretsmanager_secret.db_secret.arn
+        Resource = "${data.aws_secretsmanager_secret.db_secret.arn}*"
       }
     ]
   })
 }
+
+##################################
+# ECS TASK
+##################################
 
 resource "aws_ecs_task_definition" "task" {
 
@@ -329,7 +348,6 @@ resource "aws_ecs_task_definition" "task" {
       image = "${aws_ecr_repository.backend.repository_url}:latest"
 
       portMappings = [
-
         {
           containerPort = 8000
         }
@@ -375,6 +393,10 @@ resource "aws_ecs_task_definition" "task" {
     }
   ])
 }
+
+##################################
+# ECS SERVICE
+##################################
 
 resource "aws_ecs_service" "service" {
 
