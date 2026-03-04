@@ -1,0 +1,66 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -auto-approve
+
+      - name: Get ECR Repo
+        id: ecr
+        working-directory: terraform
+        run: echo "repo=$(terraform output -raw ecr_repo)" >> $GITHUB_OUTPUT
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ap-south-1 \
+          | docker login --username AWS --password-stdin ${{ steps.ecr.outputs.repo }}
+
+      - name: Build Docker Image
+        run: docker build -t backend ./backend
+
+      - name: Tag Image
+        run: |
+          docker tag backend:latest \
+          ${{ steps.ecr.outputs.repo }}:latest
+
+      - name: Push Image
+        run: |
+          docker push ${{ steps.ecr.outputs.repo }}:latest
+
+      - name: Redeploy ECS
+        run: |
+          aws ecs update-service \
+          --cluster farmer-cluster \
+          --service farmer-backend-service \
+          --force-new-deployment

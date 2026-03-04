@@ -190,3 +190,9 @@ coverage/
 .sass-cache/
 connect.lock
 typings/
+
+# Terraform
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform.lock.hcl
