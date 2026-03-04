@@ -2,7 +2,8 @@ name: Deploy Backend
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -16,51 +17,108 @@ jobs:
 
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v3
+    #########################################
+    # Checkout Repo
+    #########################################
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ap-south-1
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+    #########################################
+    # Configure AWS using OIDC
+    #########################################
 
-      - name: Terraform Init
-        working-directory: terraform
-        run: terraform init
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ap-south-1
 
-      - name: Terraform Apply
-        working-directory: terraform
-        run: terraform apply -auto-approve
+    #########################################
+    # Setup Terraform
+    #########################################
 
-      - name: Get ECR Repo
-        id: ecr
-        working-directory: terraform
-        run: echo "repo=$(terraform output -raw ecr_repo)" >> $GITHUB_OUTPUT
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
 
-      - name: Login to ECR
-        run: |
-          aws ecr get-login-password --region ap-south-1 \
-          | docker login --username AWS --password-stdin ${{ steps.ecr.outputs.repo }}
+    #########################################
+    # Terraform Init
+    #########################################
 
-      - name: Build Docker Image
-        run: docker build -t backend ./backend
+    - name: Terraform Init
+      working-directory: terraform
+      run: terraform init
 
-      - name: Tag Image
-        run: |
-          docker tag backend:latest \
-          ${{ steps.ecr.outputs.repo }}:latest
+    #########################################
+    # Terraform Validate
+    #########################################
 
-      - name: Push Image
-        run: |
-          docker push ${{ steps.ecr.outputs.repo }}:latest
+    - name: Terraform Validate
+      working-directory: terraform
+      run: terraform validate
 
-      - name: Redeploy ECS
-        run: |
-          aws ecs update-service \
+    #########################################
+    # Terraform Apply
+    #########################################
+
+    - name: Terraform Apply
+      working-directory: terraform
+      run: terraform apply -auto-approve
+
+    #########################################
+    # Get ECR Repo from Terraform Output
+    #########################################
+
+    - name: Get ECR Repo
+      id: ecr
+      working-directory: terraform
+      run: |
+        REPO=$(terraform output -raw ecr_repo | tr -d '\n')
+        echo "repo=$REPO" >> $GITHUB_OUTPUT
+
+    #########################################
+    # Login to ECR
+    #########################################
+
+    - name: Login to Amazon ECR
+      run: |
+        aws ecr get-login-password --region ap-south-1 \
+        | docker login \
+        --username AWS \
+        --password-stdin ${{ steps.ecr.outputs.repo }}
+
+    #########################################
+    # Build Docker Image
+    #########################################
+
+    - name: Build Docker Image
+      run: |
+        docker build -t farmer-backend ./backend
+
+    #########################################
+    # Tag Docker Image
+    #########################################
+
+    - name: Tag Docker Image
+      run: |
+        docker tag farmer-backend:latest \
+        ${{ steps.ecr.outputs.repo }}:latest
+
+    #########################################
+    # Push Image to ECR
+    #########################################
+
+    - name: Push Image
+      run: |
+        docker push ${{ steps.ecr.outputs.repo }}:latest
+
+    #########################################
+    # Force ECS Rolling Deployment
+    #########################################
+
+    - name: Redeploy ECS Service
+      run: |
+        aws ecs update-service \
           --cluster farmer-cluster \
           --service farmer-backend-service \
           --force-new-deployment
