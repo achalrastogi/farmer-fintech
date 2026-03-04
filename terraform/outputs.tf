@@ -3,7 +3,7 @@ output "ecs_cluster_name" {
 }
 
 output "ecr_repo_url" {
-  value = aws_ecr_repository.backend_repo.repository_url
+  value = aws_ecr_repository.backend.repository_url
 }
 
 output "rds_endpoint" {
