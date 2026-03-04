@@ -286,6 +286,30 @@ resource "aws_iam_role" "ecs_execution_role" {
   })
 }
 
+resource "aws_iam_role_policy" "ecs_secrets_policy" {
+
+  name = "ecs-secrets-access"
+
+  role = aws_iam_role.ecs_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "kms:Decrypt"
+        ]
+
+        Resource = data.aws_secretsmanager_secret.db_secret.arn
+      }
+    ]
+  })
+}
+
 resource "aws_ecs_task_definition" "task" {
 
   family                   = "farmer-backend"
