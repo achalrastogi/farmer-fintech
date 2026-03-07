@@ -9,9 +9,8 @@ import { useTranslation } from '../hooks/useTranslation'
    ═══════════════════════════════════════════════════════════ */
 
 const TILE_KEYS = [
-  { path: '/home',     icon: '🌾', key: 'home',     accent: 'harvest' },
-  { path: '/tools',    icon: '🧮', key: 'tools',    accent: 'indigo'  },
   { path: '/learn',    icon: '📖', key: 'learn',    accent: 'purple'  },
+  { path: '/tools',    icon: '🧮', key: 'tools',    accent: 'indigo'  },
   { path: '/schemes',  icon: '🏛️', key: 'schemes',  accent: 'amber'   },
   { path: '/loans',    icon: '🏦', key: 'loans',    accent: 'blue'    },
   { path: '/cashflow', icon: '💸', key: 'cashflow', accent: 'teal'    },
