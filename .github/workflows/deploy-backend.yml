@@ -5,9 +5,12 @@ on:
     branches:
       - main
 
-    paths:
-      - 'backend/**'
   workflow_dispatch:
+  inputs:
+  deploy_ecs:
+    description: "Deploy ECS service after pushing image"
+    required: false
+    default: "false"
 
 permissions:
   id-token: write
@@ -79,6 +82,7 @@ jobs:
     #########################################
 
     - name: Redeploy ECS Service
+      if: ${{ github.event.inputs.deploy_ecs == 'true' }}
       run: |
         aws ecs update-service \
           --cluster farmer-cluster \
