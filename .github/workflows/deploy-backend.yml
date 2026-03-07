@@ -38,18 +38,6 @@ jobs:
         aws-region: ap-south-1
 
     #########################################
-    # Get ECR Repo from Terraform Output
-    #########################################
-
-    - name: Get ECR Repo
-      id: ecr 
-      run: | 
-        REPO=$(aws ecr describe-repositories \ 
-        --repository-names farmer-backend \ 
-        --query 'repositories[0].repositoryUri' \ 
-        --output text) echo "repo=$REPO" >> $GITHUB_OUTPUT
-
-    #########################################
     # Login to ECR
     #########################################
 
@@ -58,7 +46,7 @@ jobs:
         aws ecr get-login-password --region ap-south-1 \
         | docker login \
         --username AWS \
-        --password-stdin ${{ steps.ecr.outputs.repo }}
+        --password-stdin ${{ vars.ECR_REPO_URL }}
 
     #########################################
     # Build Docker Image
