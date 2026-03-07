@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+    paths:
+      - 'backend/**'
+
 permissions:
   id-token: write
   contents: read
@@ -35,46 +38,16 @@ jobs:
         aws-region: ap-south-1
 
     #########################################
-    # Setup Terraform
-    #########################################
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
-    #########################################
-    # Terraform Init
-    #########################################
-
-    - name: Terraform Init
-      working-directory: terraform
-      run: terraform init
-
-    #########################################
-    # Terraform Validate
-    #########################################
-
-    - name: Terraform Validate
-      working-directory: terraform
-      run: terraform validate
-
-    #########################################
-    # Terraform Apply
-    #########################################
-
-    - name: Terraform Apply
-      working-directory: terraform
-      run: terraform apply -auto-approve
-
-    #########################################
     # Get ECR Repo from Terraform Output
     #########################################
 
     - name: Get ECR Repo
-      id: ecr
-      working-directory: terraform
-      run: |
-        REPO=$(terraform output -raw ecr_repo | tr -d '\n')
-        echo "repo=$REPO" >> $GITHUB_OUTPUT
+      id: ecr 
+      run: | 
+        REPO=$(aws ecr describe-repositories \ 
+        --repository-names farmer-backend \ 
+        --query 'repositories[0].repositoryUri' \ 
+        --output text) echo "repo=$REPO" >> $GITHUB_OUTPUT
 
     #########################################
     # Login to ECR
