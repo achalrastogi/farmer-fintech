@@ -64,7 +64,7 @@ jobs:
     - name: Tag Docker Image
       run: |
         docker tag farmer-backend:latest \
-        ${{ steps.ecr.outputs.repo }}:latest
+        ${{ vars.ECR_REPO_URL }}:latest
 
     #########################################
     # Push Image to ECR
@@ -72,7 +72,7 @@ jobs:
 
     - name: Push Image
       run: |
-        docker push ${{ steps.ecr.outputs.repo }}:latest
+        docker push ${{ vars.ECR_REPO_URL }}:latest
 
     #########################################
     # Force ECS Rolling Deployment
