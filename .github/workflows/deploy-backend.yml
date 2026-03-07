@@ -6,11 +6,11 @@ on:
       - main
 
   workflow_dispatch:
-  inputs:
-    deploy_ecs:
-      description: "Deploy ECS service after pushing image"
-      required: false
-      default: "false"
+    inputs:
+      deploy_ecs:
+        description: "Deploy ECS service after pushing image"
+        required: false
+        default: "false"
 
 permissions:
   id-token: write
