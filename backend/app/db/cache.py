@@ -1,5 +1,4 @@
 import json
-from backend import app
 import redis.asyncio as aioredis
 from typing import Any, Optional
 from app.core.config import settings
@@ -46,10 +45,3 @@ async def cache_delete(key: str):
         await asyncio.wait_for(redis.delete(key), timeout=2)
     except Exception:
         pass
-
-@app.get("/redis-test")
-async def redis_test():
-    redis = await get_redis()
-    await redis.set("test", "ok", ex=60)
-    val = await redis.get("test")
-    return {"redis": val}
