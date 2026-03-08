@@ -157,9 +157,7 @@ class BedrockService:
         if self._client is None:
             self._client = boto3.client(
                 "bedrock-runtime",
-                region_name=settings.AWS_REGION,
-                aws_access_key_id=settings.AWS_ACCESS_KEY_ID or None,
-                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY or None,
+                region_name=settings.AWS_REGION
             )
         return self._client
 
