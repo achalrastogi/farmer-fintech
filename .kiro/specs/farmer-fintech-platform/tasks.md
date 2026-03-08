@@ -135,22 +135,22 @@ Tasks map to requirements in `requirements.md`. `[x]` = completed. `[ ]` = pendi
 
 ## Phase 12: Deployment & Infrastructure (Pending) [ ]
 
-- [ ] 65. Launch RDS PostgreSQL db.t3.micro in ap-south-1, run `init.sql`
-- [ ] 66. Launch ElastiCache Redis cache.t3.micro in ap-south-1
-- [ ] 67. Create S3 buckets for content storage
-- [ ] 68. Create DynamoDB tables for game sessions
-- [ ] 69. Setup AWS Secrets Manager with production credentials
-- [ ] 70. Build Docker image, push to Amazon ECR
-- [ ] 71. Create ECS Fargate cluster + task definition
-- [ ] 72. Create ECS Service with ALB + health check on `/health`
-- [ ] 73. Set up API Gateway HTTP API in front of ALB
-- [ ] 74. Deploy frontend to AWS Amplify from GitHub
-- [ ] 75. Configure CloudFront distribution + WAF
-- [ ] 76. Enable AWS Bedrock Claude 3 Sonnet model access (ap-south-1)
-- [ ] 77. Configure Bedrock Guardrails
-- [ ] 78. End-to-end smoke test: register → lessons → calculators → schemes → AI Q&A
-- [ ] 79. Record demo video
-- [ ] 80. Submit on hackathon dashboard
+- [x] 65. Launch RDS PostgreSQL db.t3.micro in ap-south-1, run `init.sql`
+- [x] 66. Launch ElastiCache Redis cache.t3.micro in ap-south-1
+- [x] 67. Create S3 buckets for content storage
+- [x] 68. Create DynamoDB tables for game sessions
+- [x] 69. Setup AWS Secrets Manager with production credentials
+- [x] 70. Build Docker image, push to Amazon ECR
+- [x] 71. Create ECS Fargate cluster + task definition
+- [x] 72. Create ECS Service with ALB + health check on `/health`
+- [x] 73. Set up API Gateway HTTP API in front of ALB
+- [x] 74. Deploy frontend to AWS Amplify from GitHub
+- [x] 75. Configure CloudFront distribution + WAF
+- [x] 76. Enable AWS Bedrock Claude 3 Sonnet model access (ap-south-1)
+- [x] 77. Configure Bedrock Guardrails
+- [x] 78. End-to-end smoke test: register → lessons → calculators → schemes → AI Q&A
+- [x] 79. Record demo video
+- [x] 80. Submit on hackathon dashboard
 
 ---
 

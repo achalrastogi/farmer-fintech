@@ -12,24 +12,40 @@ Farmers fall into debt traps not due to lack of access, but lack of financial kn
 
 ## Solution Approach
 
-Education-first: Farmers learn through AI-personalized stories and interactive games before seeing any product recommendations. Trust through knowledge, not sales pressure.
+Education-first: Farmers learn through structured lessons, interactive calculators, and government scheme discovery. Trust through knowledge, not sales pressure.
 
-Learning flow: Story → Practice Game → Quiz → Recommendations (80% quiz score required to unlock products)
+Learning flow: Structured Lessons → Interactive Calculators → Government Schemes → Personalized Dashboard
 
 ## Key Features
 
-- AI-generated personalized financial stories (AWS Bedrock Claude 3 Sonnet)
-- Interactive practice games (loan comparison, crop planning)
-- Multilingual support (Hindi, Punjabi, Telugu, Tamil, Marathi, Bengali, English)
-- Government scheme recommendations (PM-Kisan, PMFBY, KCC)
-- Financial calculators (crop profit, loan ROI, EMI safety, break-even)
-- Offline-first PWA with sync capability
-- Voice support via Bhashini TTS/STT
+### Current Implementation (Phase 1)
+- **126 structured financial lessons** across 8 modules (Farm Financial Empowerment Workbook)
+- **8 interactive financial calculators** (Crop Profit, Loan ROI, EMI Safety, Storage Decision, Emergency Fund, Break-Even, Crop Comparison, Cost Leakage)
+- **Government scheme database** with AI-powered Q&A (6 categories: Income Support, Insurance, Subsidy, Credit, Allied Activities, Pension)
+- **Personalized dashboard** with farm snapshot, profit estimation, and risk assessment
+- **Multi-language support** (Hindi, Punjabi, Marathi, English with fallback chain)
+- **AI Assistant** (AWS Bedrock Claude 3 Sonnet) for scheme Q&A and financial concepts
+- **Mobile-first PWA** optimized for low-end Android devices (8.0+, 1GB RAM)
+- **2G-compatible** (64 kbps minimum, 10-second load time)
+
+### Phase 2 (Months 7–12)
+- Voice interface integration (Bhashini TTS/STT)
+- Offline-first with Service Worker caching
+- WhatsApp Bot Integration
+- Community Forum
+- Additional sections: Loans, Cash Flow, Risk, Market, Wealth Growth
+
+### Phase 3 (Year 2)
+- Direct loan application via partner bank APIs
+- Real-time commodity price and weather data
+- Desktop web version
+- Full video lesson content
+- Advanced AI story generation
 
 ## Target Impact
 
 - 10,000 pilot farmers (Punjab wheat — Phase 1)
-- 80% can explain interest rate difference after completing module
+- 80% can explain interest rate difference after completing lessons
 - 40% apply for formal credit vs moneylenders
 - ₹15,000 average savings per user per year
 - AI cost < ₹0.50 per user per month
@@ -41,4 +57,4 @@ Password: demo1234
 
 ## Data Compliance
 
-All data stays in ap-south-1 (Mumbai) — DPDPA 2023 compliant.
+All data stays in ap-south-1 (Mumbai) — DPDPA 2023 compliant. TLS 1.3 in transit, AES-256 at rest (AWS KMS).

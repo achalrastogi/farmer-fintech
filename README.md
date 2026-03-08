@@ -54,6 +54,18 @@ An **education-first** fintech platform providing:
 - Daily financial tips
 - Quick access to all sections
 
+## AWS Architecture
+
+Visual architecture diagrams are available in `generated-diagrams/`:
+
+1. **Deployment Architecture** - Complete AWS infrastructure with all services
+2. **Solution Architecture** - Application flow and data flow patterns
+3. **AI Q&A Data Flow** - Caching strategy for AWS Bedrock integration
+4. **Offline Sync Flow** - Offline-first architecture with Service Worker
+5. **Network Architecture** - VPC design with multi-AZ deployment
+
+See `AWS-ARCHITECTURE-DOCUMENTATION.md` for detailed documentation.
+
 ## Quick Start (Local Development)
 
 ```bash
@@ -86,9 +98,9 @@ npm run dev
 
 | Link | Description |
 |------|-------------|
-| 🌐 **[Live App](https://farmerfintech.amplifyapp.com)** | React PWA — works on any phone |
-| 📡 **[API Docs](https://api.farmerfintech.in/docs)** | Interactive FastAPI documentation |
-| 🎥 **[Demo Video](https://youtube.com/...)** | 3-minute walkthrough |
+| 🌐 **[Live App](https://main.d8zrmjkl46v8p.amplifyapp.com/login)** | React PWA — works on any phone |
+| 📡 **[API Docs](https://d18727ncpsiou3.cloudfront.net/docs)** | Interactive FastAPI documentation |
+| 🎥 **[Demo Video](https://youtu.be/9EmEOY7SKAE)** | 3-minute walkthrough |
 
 ## AWS Architecture
 
